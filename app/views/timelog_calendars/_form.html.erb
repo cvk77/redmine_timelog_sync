@@ -1,0 +1,10 @@
+<% form_for(@calendar) do |f| %>
+    <%= f.error_messages %> 
+    <div class="box tabular">
+        <p> <%= f.label :name %><%= f.text_field :name %> </p>
+        <p> <%= f.label :username %><%= f.text_field :username %> </p>
+        <p> <%= f.label :password %><%= f.password_field :password %> </p>
+        
+    </div>
+    <%= f.submit "Save" %>
+<% end %>
