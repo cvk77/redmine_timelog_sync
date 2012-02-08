@@ -46,7 +46,7 @@ module CalDAV
         public
 
             def initialize(url, user, password )
-               @url = BASE_URL + url
+               @url = URI.escape(BASE_URL + url)
                @user = user
                @password = password
             end

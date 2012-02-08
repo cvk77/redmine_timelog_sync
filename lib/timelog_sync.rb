@@ -55,7 +55,7 @@ module TimelogSync
         def load_config
             tc = TimelogCalendar.by_user(User.current).first
             if tc.nil?
-                TimelogSync::logger.error("No calendar data for user: " + User.current)
+                TimelogSync::logger.info("Not sending to server. No calendar data for user: " + User.current.to_s)
                 return
             end
             return tc
