@@ -10,11 +10,11 @@ module TimelogSync
     class TimeLogEntry
 
         def initialize(model)
-            @uid = URI.escape("redmine:" + User.current.name + ":" + model.id.to_s)
-            @client = find_client(model)
+            @uid = URI.escape("redmine:#{User.current.login}:#{model.id.to_s}")
+            @client = model.project.custom_value_for(ProjectCustomField.find_by_name("Client"))
             @project = model.project.name
             @task = model.activity.name
-            @description = model.comments
+            @description = "\##{model.issue.id}: #{model.comments}"
             @start = model.spent_on.to_datetime
             @end = @start + model.hours.hours #sic!
         end
@@ -39,34 +39,26 @@ module TimelogSync
             tc = load_config
             return if tc.nil?
             TimelogSync::logger.info("Uploading event to #{tc.name}")
-            c = CalDAV::Connection.new("https://team.webrunners.de/calendar/caldav.php/#{tc.username}/#{tc.name}", tc.username, tc.password)
+            c = CalDAV::Connection.new("/#{tc.username}/#{tc.name}", tc.username, tc.password)
             c.create self.to_event
         end
 
         def delete
             tc = load_config
             return if tc.nil?
-            c = CalDAV::Connection.new("https://team.webrunners.de/calendar/caldav.php/#{tc.username}/#{tc.name}", tc.username, tc.password)
+            c = CalDAV::Connection.new("/#{tc.username}/#{tc.name}", tc.username, tc.password)
             c.remove @uid
         end
 
         private
 
-        def load_config()
+        def load_config
             tc = TimelogCalendar.by_user(User.current).first
             if tc.nil?
                 TimelogSync::logger.error("No calendar data for user: " + User.current)
                 return
             end
             return tc
-        end
-
-        def find_client(project)
-            project.custom_field_values.each do |field|
-                if field.custom_field.name == "Client"
-                    return field.value
-                end
-            end
         end
 
     end

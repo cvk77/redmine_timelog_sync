@@ -2,6 +2,7 @@ module CalDAV
 
     DATEFORMAT = "%Y%m%dT%H%M%S"
     PRODID = "-//TimeLogSync//webrunners.de//"
+    BASE_URL = "https://team.webrunners.de/calendar/caldav.php"
 
     require 'date'
     require 'net/http'
@@ -13,7 +14,7 @@ module CalDAV
 
         def initialize()
             @dtstart = DateTime.now
-            @dtend = DateTime.now + 2.0/24
+            @dtend = DateTime.now
             @uid = UUIDTools::UUID.random_create
         end
 
@@ -45,7 +46,7 @@ module CalDAV
         public
 
             def initialize(url, user, password )
-               @url = url
+               @url = BASE_URL + url
                @user = user
                @password = password
             end
@@ -57,32 +58,32 @@ module CalDAV
             end
 
             def create event
-                put(@url + "/" + event.uid + ".ics", event.to_s)
+                HTTP_put(@url + "/" + event.uid + ".ics", event.to_s)
                 event.uid
             end
 
             def remove uid
-                delete(@url + "/" + uid + ".ics")
+                HTTP_delete(@url + "/" + uid + ".ics")
             end
 
         private
 
-            def connect(url)
+            def HTTP_connect(url)
                 url = URI.parse(url)
                 http = Net::HTTP.new(url.host, url.port)
                 http.use_ssl = url.scheme == "https"
                 return http, url
             end
 
-            def get(url)
-                http, url = connect(url)
+            def HTTP_get(url)
+                http, url = HTTP_connect(url)
                 request = Net::HTTP::Get.new(url.path)
                 request.basic_auth @user, @password
                 http.start {|http| http.request(request) }
             end
 
-            def put(url, body, content_type = 'text/calendar')
-                http, url = connect(url)
+            def HTTP_put(url, body, content_type = 'text/calendar')
+                http, url = HTTP_connect(url)
                 request = Net::HTTP::Put.new(url.path)
                 request.basic_auth @user, @password
                 request['Content-Type'] = content_type
@@ -90,8 +91,8 @@ module CalDAV
                 http.start {|http| http.request(request) }
             end
 
-            def delete(url)
-                http, url = connect(url)
+            def HTTP_delete(url)
+                http, url = HTTP_connect(url)
                 request = Net::HTTP::Delete.new(url.path)
                 request.basic_auth @user, @password
                 http.start {|http| http.request(request) }
