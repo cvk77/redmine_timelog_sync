@@ -54,7 +54,7 @@ module CalDAV
             def retrieve uid = nil
                 url = @url
                 url = url + "/" + uid + ".ics" if not uid.nil?
-                get(url).body
+                HTTP_get(url).body
             end
 
             def create event
@@ -64,6 +64,10 @@ module CalDAV
 
             def remove uid
                 HTTP_delete(@url + "/" + uid + ".ics")
+            end
+
+            def check_login
+                HTTP_get(@url)
             end
 
         private
