@@ -24,7 +24,7 @@ class TimelogCalendarsController < ApplicationController
   
   def create
     @calendar = TimelogCalendar.new(params[:timelog_calendar])
-    @calendar.user_id = User.current
+    @calendar.user = User.current
     if @calendar.save
         flash[:notice] = 'Configuration saved'
         redirect_to @calendar

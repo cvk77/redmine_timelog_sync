@@ -1,0 +1,8 @@
+api.array :activities, api_meta(:total_count => @activity_count, :offset => @offset, :limit => @limit) do
+ @activities.each do | activity |
+   api.activity do
+     api.id          activity.id
+     api.name        activity.name
+   end
+ end
+end
