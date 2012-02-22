@@ -1,3 +1,8 @@
 = timelog_sync
 
-Description goes here
+Sync Redmine's time entries to CalDAV server. 
+
+Our company migrated from TimeLog (http://www.grandtotal.biz/TimeLog4/) to Redmine's time tracking, but we needed to maintain compatibility with GrandTotal, 
+so I created a little Redmine plugin automatically creates calendar entries on our CalDAV-Server in TimeLog's format, as soon as efforts are added to Redmine.
+
+This was intended to be used internally only, so it's a bit hacky. Please expect hardcoded paths, weird behaviour and all kind of insanity.
