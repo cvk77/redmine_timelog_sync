@@ -14,7 +14,8 @@ module TimelogSync
             @client = model.project.custom_value_for(ProjectCustomField.find_by_name("Client"))
             @project = model.project.name
             @task = model.activity.name
-            @description = "\##{model.issue.id}: #{model.comments}"
+            comment = unless model.comments.blank? then model.comments else model.issue.subject end
+            @description = "\##{model.issue.id}: #{comment}"
             @start = model.spent_on.to_datetime
             @end = @start + model.hours.hours #sic!
         end
