@@ -3,6 +3,7 @@ api.array :activities, api_meta(:total_count => @activity_count, :offset => @off
    api.activity do
      api.id          activity.id
      api.name        activity.name
+     api.project(:id => activity.project.id, :name => activity.project.name) if activity.project && activity.project.visible?
    end
  end
 end

@@ -1,5 +1,6 @@
 require 'redmine'
 require 'dispatcher'
+require 'patches/spent_time_field.rb'
 
 require_dependency 'principal'
 require_dependency 'user'
@@ -24,4 +25,9 @@ end
 class SyncCalHooks < Redmine::Hook::ViewListener
     render_on :view_my_account_contextual, :inline => "| <%= link_to(l(:label_cal_config), timelog_calendars_path) %>"
 end
+
+Query.class_eval do
+    include QueryPatch
+end
+
 
