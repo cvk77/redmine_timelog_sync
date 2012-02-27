@@ -17,8 +17,8 @@ Redmine::Plugin.register :redmine_timelog_sync do
   name 'Redmine Timelog Sync plugin'
   author 'Christoph von Krüchten'
   description 'Sync efforts to an CalDAV server in Timelog''s format'
-  version '0.0.1'
-  url 'http://example.com/path/to/plugin'
+  version '0.2'
+  url 'http://team.webrunners.de/redmine'
   author_url 'http://www.webrunners.de'
 end
 
