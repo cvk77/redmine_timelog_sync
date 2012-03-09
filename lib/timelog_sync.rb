@@ -35,7 +35,6 @@ module TimelogSync
             return e
         end
 
-
         def upload
             tc = load_config
             return if tc.nil?

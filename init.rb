@@ -1,12 +1,13 @@
 require 'redmine'
 require 'dispatcher'
 require 'patches/spent_time_field.rb'
+require 'hooks.rb'
 
 require_dependency 'principal'
 require_dependency 'user'
 
 require_dependency 'timelog_sync'
-require_dependency 'patches/time_entry_signals.rb'
+require_dependency 'patches/time_entry_patches.rb'
 
 Dispatcher.to_prepare :redmine_timelog_sync do
     require_dependency 'time_entry'
@@ -20,10 +21,6 @@ Redmine::Plugin.register :redmine_timelog_sync do
   version '0.2'
   url 'http://team.webrunners.de/redmine'
   author_url 'http://www.webrunners.de'
-end
-
-class SyncCalHooks < Redmine::Hook::ViewListener
-    render_on :view_my_account_contextual, :inline => "| <%= link_to(l(:label_cal_config), timelog_calendars_path) %>"
 end
 
 Query.class_eval do
