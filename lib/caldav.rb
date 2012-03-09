@@ -63,6 +63,7 @@ module CalDAV
             end
 
             def remove uid
+                TimelogSync::logger.info("deleting event #{uid}")
                 HTTP_delete(@url + "/" + uid + ".ics")
             end
 
@@ -88,11 +89,14 @@ module CalDAV
 
             def HTTP_put(url, body, content_type = 'text/calendar')
                 http, url = HTTP_connect(url)
+                TimelogSync::logger.debug("Connecting to #{url}")
                 request = Net::HTTP::Put.new(url.path)
+                TimelogSync::logger.debug("Authenticating with #{@user}")
                 request.basic_auth @user, @password
                 request['Content-Type'] = content_type
                 request.body = body
-                http.start {|http| http.request(request) }
+                response = http.start {|http| http.request(request) }
+                TimelogSync::logger.debug("Response #{response}")
             end
 
             def HTTP_delete(url)

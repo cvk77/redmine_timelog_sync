@@ -9,6 +9,7 @@ module TimelogSync
     
     class TimeLogEntry
 
+        # @param model [TimeEntry]
         def initialize(model)
             @uid = URI.escape("redmine:#{User.current.login}:#{model.id.to_s}")
             @client = model.project.custom_value_for(ProjectCustomField.find_by_name("Client"))
@@ -16,8 +17,18 @@ module TimelogSync
             @task = model.activity.name
             comment = unless model.comments.blank? then model.comments else model.issue.subject end
             @description = "\##{model.issue.id}: #{comment}"
-            @start = model.spent_on.to_datetime
-            @end = @start + model.hours.hours #sic!
+
+            # see Feature #2488
+            if model.spent_on == Date.today
+                # Set entries for today to the correct time (i.e. now - time spent)
+                @start = DateTime.now - model.hours.hours #sic!
+                @end = DateTime.now
+            else
+                # Entry for another day - set to 0:00 to avoid false information
+                @start = model.spent_on.to_datetime
+                @end = @start + model.hours.hours #sic!
+            end
+
         end
 
         def to_s
